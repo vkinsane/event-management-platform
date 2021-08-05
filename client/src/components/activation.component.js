@@ -5,7 +5,7 @@ import axios from "axios";
 // Importing the Components from react-bootstrap
 import { Container, Button, Card, Alert } from "react-bootstrap";
 // import Login from "./loginpage.component";
-
+// Sample comment
 export default class Activation extends Component {
   state = {
     alertType: "",
