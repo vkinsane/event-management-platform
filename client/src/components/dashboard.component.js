@@ -17,8 +17,6 @@ import {
   Table,
 } from "react-bootstrap";
 
-const port = process.env.REACT_APP_SERVER_PORT;
-
 export default class DashBoard extends Component {
   state = {
     persons: [],
@@ -34,10 +32,15 @@ export default class DashBoard extends Component {
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
     console.log(JSON.parse(localStorage.getItem("auth-token")));
-    const attendance = axios.get(`http://localhost:${port}/attendance/`);
-    const eventsData = axios.get(`http://localhost:${port}/event/`, {
-      headers: JSON.parse(localStorage.getItem("auth-token")),
-    });
+    const attendance = axios.get(
+      `https://backend-api-emp.herokuapp.com/attendance/`
+    );
+    const eventsData = axios.get(
+      `https://backend-api-emp.herokuapp.com/event/`,
+      {
+        headers: JSON.parse(localStorage.getItem("auth-token")),
+      }
+    );
 
     axios
       .all([attendance, eventsData])
@@ -91,7 +94,7 @@ export default class DashBoard extends Component {
         return 0;
       });
       axios
-        .post(`http://localhost:${port}/attendance/attend/${id}`, {
+        .post(`https://backend-api-emp.herokuapp.com/attendance/attend/${id}`, {
           slots: slots,
           attendance: attendance,
         })

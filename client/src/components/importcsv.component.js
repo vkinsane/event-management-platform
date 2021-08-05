@@ -8,8 +8,6 @@ import addStudent from "../assets/images/AddStudent.svg";
 // Importing the Components from react-bootstrap
 import { Container, Col, Form, Row, Alert } from "react-bootstrap";
 
-const port = process.env.REACT_APP_SERVER_PORT;
-
 export default class ImportCsv extends Component {
   state = {
     fname: "",
@@ -26,7 +24,7 @@ export default class ImportCsv extends Component {
   componentDidMount() {
     // localStorage.removeItem("parseSuccess");
     axios
-      .get(`http://localhost:${port}/event/`)
+      .get(`https://backend-api-emp.herokuapp.com/event/`)
       .then((res) => {
         this.setState({ eventsd: res.data });
       })
@@ -74,7 +72,7 @@ export default class ImportCsv extends Component {
           student.slots = slots;
           console.log(x);
           axios
-            .post(`http://localhost:${port}/attendance/register`, {
+            .post(`https://backend-api-emp.herokuapp.com/attendance/register`, {
               fname: student.fname,
               email: student.email,
               event_name: student.event_name,

@@ -20,7 +20,7 @@ import email_formatcorrect from "../assets/images/req_for_adduser/email_formatco
 import email_formatwrong from "../assets/images/req_for_adduser/email_formatwrong.jpg";
 import password_formatcorrect from "../assets/images/req_for_adduser/password_formatcorrect.jpg";
 import password_formatwrong from "../assets/images/req_for_adduser/password_formatwrong.jpg";
-const port = process.env.REACT_APP_SERVER_PORT;
+// const port = process.env.REACT_APP_SERVER_PORT;
 
 export default class Login extends Component {
   state = {
@@ -139,7 +139,7 @@ export default class Login extends Component {
       password: this.state.password,
     };
     axios({
-      url: `http://localhost:${port}/users/login`,
+      url: `https://backend-api-emp.herokuapp.com/users/login`,
       method: "POST",
       data: payLoads,
     })
@@ -176,7 +176,7 @@ export default class Login extends Component {
     localStorage.setItem("userGoogleImgUrl", response.profileObj.imageUrl);
     // console.log(response.profileObj.email);
     axios({
-      url: `http://localhost:${port}/users/google/login`,
+      url: `https://backend-api-emp.herokuapp.com/users/google/login`,
       method: "POST",
       data: payLoad,
     })
