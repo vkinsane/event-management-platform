@@ -63,6 +63,7 @@ export default class AddStudent extends Component {
       .map((eventx) =>
         Object.keys(eventx.slots).map((opt) => {
           slots[opt] = [];
+          return 0;
         })
       );
     this.setState({ slots: slots });
@@ -127,7 +128,7 @@ export default class AddStudent extends Component {
         </Row>
         <Form onSubmit={this.submit}>
           {/* ATTENDEE NAME */}
-          <Form.Row controlId="formBasicText">
+          <Form.Row controlid="formBasicText">
             <Form.Label column sm="2">
               Full Name
             </Form.Label>
@@ -142,7 +143,7 @@ export default class AddStudent extends Component {
           </Form.Row>
 
           {/* ATTENDEE EMAIL */}
-          <Form.Row controlId="formBasicEmail">
+          <Form.Row controlid="formBasicEmail">
             <Form.Label column sm="2">
               Email address
             </Form.Label>
@@ -157,7 +158,7 @@ export default class AddStudent extends Component {
           </Form.Row>
 
           {/* ATTENDEE CONTACT */}
-          <Form.Row controlId="formBasicEmail">
+          <Form.Row controlid="formBasicEmail">
             <Form.Label column sm="2">
               Contact No.
             </Form.Label>
@@ -172,7 +173,7 @@ export default class AddStudent extends Component {
           </Form.Row>
 
           {/* EVENT */}
-          <Form.Row controlId="formBasicTest">
+          <Form.Row controlid="formBasicTest">
             <Form.Label column sm="2">
               Event Name
             </Form.Label>
@@ -198,7 +199,7 @@ export default class AddStudent extends Component {
           </Form.Row>
 
           {/* ATTENDEE DURATION */}
-          <Form.Row controlId="formBasicText">
+          <Form.Row controlid="formBasicText">
             <Form.Label column sm="2">
               Event Duration
             </Form.Label>

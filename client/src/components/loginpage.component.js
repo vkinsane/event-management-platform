@@ -32,7 +32,7 @@ export default class Login extends Component {
         overlay={<Tooltip id="tooltip-disabled">Enter Email</Tooltip>}
       >
         <span className="d-inline-block">
-          <img src={email_default} height="50px" />
+          <img alt="pic" src={email_default} height="50px" />
         </span>
       </OverlayTrigger>
     ),
@@ -42,7 +42,7 @@ export default class Login extends Component {
         overlay={<Tooltip id="tooltip-disabled">Enter Password</Tooltip>}
       >
         <span className="d-inline-block">
-          <img src={password_default} height="50px" />
+          <img alt="pic" src={password_default} height="50px" />
         </span>
       </OverlayTrigger>
     ),
@@ -66,7 +66,7 @@ export default class Login extends Component {
     const { name, value } = target;
     this.setState({ [name]: value });
 
-    if (name == "email") {
+    if (name === "email") {
       this.setState({
         emailIcon: (
           <OverlayTrigger
@@ -83,6 +83,7 @@ export default class Login extends Component {
           >
             <span className="d-inline-block">
               <img
+                alt="pic"
                 src={
                   value.match(
                     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$"
@@ -102,14 +103,14 @@ export default class Login extends Component {
         ),
       });
     }
-    if (name == "password") {
+    if (name === "password") {
       this.setState({
         passwordIcon: (
           <OverlayTrigger
             placement="right"
             overlay={
               <Tooltip id="tooltip-disabled">
-                {value != ""
+                {value !== ""
                   ? "Valid password Format ✔"
                   : "Password Cannot be empty"}
               </Tooltip>
@@ -117,15 +118,16 @@ export default class Login extends Component {
           >
             <span className="d-inline-block">
               <img
+                alt="pic"
                 src={
-                  value != "" ? password_formatcorrect : password_formatwrong
+                  value !== "" ? password_formatcorrect : password_formatwrong
                 }
                 height="50px"
               />
             </span>
           </OverlayTrigger>
         ),
-        passwordFormatMatched: !(value != ""),
+        passwordFormatMatched: !(value !== ""),
       });
     }
   };
@@ -143,7 +145,8 @@ export default class Login extends Component {
     })
       .then((res) => {
         this.setState({ message: "Login success", alertType: "success" });
-        this.state.flag = true;
+        // this.state.flag = true;
+        this.setState({ flag: true });
         localStorage.setItem("login", JSON.stringify(this.state.flag));
         localStorage.setItem(
           "auth-token",
@@ -179,7 +182,7 @@ export default class Login extends Component {
     })
       .then((res) => {
         this.setState({ message: "Login success", alertType: "success" });
-        this.state.flag = true;
+        this.setState({ flag: true });
         localStorage.setItem("login", JSON.stringify(this.state.flag));
         localStorage.setItem(
           "auth-token",
@@ -201,7 +204,9 @@ export default class Login extends Component {
   responseGoogleFailure = (response) => {
     console.log("Failed");
   };
-
+  // componentDidMount = () => {
+  //   console.log("Loaded");
+  // };
   render() {
     return (
       <Container className="logreg-forms App-header py-5">
@@ -236,7 +241,7 @@ export default class Login extends Component {
               </Nav.Link>
             </Nav.Item>
           </Nav>
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label>Email</Form.Label>
             <InputGroup>
               <Form.Control
@@ -248,7 +253,7 @@ export default class Login extends Component {
               <InputGroup.Append>{this.state.emailIcon}</InputGroup.Append>
             </InputGroup>
           </Form.Row>
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label>Password</Form.Label>
             <InputGroup>
               <Form.Control
@@ -310,7 +315,7 @@ export default class Login extends Component {
                 block
               >
                 <img
-                  alt=""
+                  alt="pic"
                   src={g}
                   width="20"
                   height="20"

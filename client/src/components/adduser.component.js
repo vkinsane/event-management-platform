@@ -13,8 +13,8 @@ import {
   Tooltip,
   ProgressBar,
 } from "react-bootstrap";
-import Login from "./loginpage.component";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+// import Login from "./loginpage.component";
+// import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import g from "../assets/images/g.svg";
 import { GoogleLogin } from "react-google-login";
@@ -32,7 +32,7 @@ import lname_formatcorrect from "../assets/images/req_for_adduser/img_correct.jp
 import lname_formatwrong from "../assets/images/req_for_adduser/img_wrong.jpg";
 import fname_formatcorrect from "../assets/images/req_for_adduser/img_correct.jpg";
 import fname_formatwrong from "../assets/images/req_for_adduser/img_wrong.jpg";
-
+var passwordStrength = { variant: "success", now: 0 };
 export default class AddUser extends Component {
   state = {
     fname: "",
@@ -50,7 +50,7 @@ export default class AddUser extends Component {
         overlay={<Tooltip id="tooltip-disabled">Enter Firstname</Tooltip>}
       >
         <span className="d-inline-block">
-          <img src={name_default} height="50px" />
+          <img alt="pic" src={name_default} height="50px" />
         </span>
       </OverlayTrigger>
     ),
@@ -60,7 +60,7 @@ export default class AddUser extends Component {
         overlay={<Tooltip id="tooltip-disabled">Enter Lastname</Tooltip>}
       >
         <span className="d-inline-block">
-          <img src={name_default} height="50px" />
+          <img alt="pic" src={name_default} height="50px" />
         </span>
       </OverlayTrigger>
     ),
@@ -72,7 +72,7 @@ export default class AddUser extends Component {
         overlay={<Tooltip id="tooltip-disabled">Enter Email</Tooltip>}
       >
         <span className="d-inline-block">
-          <img src={email_default} height="50px" />
+          <img alt="pic" src={email_default} height="50px" />
         </span>
       </OverlayTrigger>
     ),
@@ -82,7 +82,7 @@ export default class AddUser extends Component {
         overlay={<Tooltip id="tooltip-disabled">Enter Password</Tooltip>}
       >
         <span className="d-inline-block">
-          <img src={password_default} height="50px" />{" "}
+          <img alt="pic" src={password_default} height="50px" />{" "}
         </span>
       </OverlayTrigger>
     ),
@@ -92,7 +92,6 @@ export default class AddUser extends Component {
     passwordFormatMatched: true,
     register_visibility: "",
     redirect: false,
-    passwordStrength: { variant: "success", now: 0 },
   };
   // timer() {
   //   setTimeout(() => {
@@ -104,7 +103,7 @@ export default class AddUser extends Component {
     const { name, value } = target;
     this.setState({ [name]: value });
 
-    if (name == "fname") {
+    if (name === "fname") {
       this.setState({
         fnamePatternMsg: (
           <OverlayTrigger
@@ -119,6 +118,7 @@ export default class AddUser extends Component {
           >
             <span className="d-inline-block">
               <img
+                alt="pic"
                 src={
                   value.match("^[a-zA-Z-]+$") != null
                     ? fname_formatcorrect
@@ -132,7 +132,7 @@ export default class AddUser extends Component {
         fnameFormatMatched: !(value.match("^[a-zA-Z-]+$") != null),
       });
     }
-    if (name == "lname") {
+    if (name === "lname") {
       this.setState({
         lnamePatternMsg: (
           <OverlayTrigger
@@ -147,6 +147,7 @@ export default class AddUser extends Component {
           >
             <span className="d-inline-block">
               <img
+                alt="pic"
                 src={
                   value.match("^[a-zA-Z-]+$") != null
                     ? lname_formatcorrect
@@ -179,7 +180,7 @@ export default class AddUser extends Component {
             overlay={<Tooltip id="tooltip-disabled">Valid Format ✔</Tooltip>}
           >
             <span className="d-inline-block">
-              <img src={email_formatcorrect} height="50px" />
+              <img alt="pic" src={email_formatcorrect} height="50px" />
             </span>
           </OverlayTrigger>
         ),
@@ -198,7 +199,7 @@ export default class AddUser extends Component {
             }
           >
             <span className="d-inline-block">
-              <img src={email_formatwrong} height="50px" />
+              <img alt="pic" src={email_formatwrong} height="50px" />
             </span>
           </OverlayTrigger>
         ),
@@ -224,14 +225,14 @@ export default class AddUser extends Component {
             overlay={<Tooltip id="tooltip-disabled">Valid Format ✔</Tooltip>}
           >
             <span className="d-inline-block">
-              <img src={password_formatcorrect} height="50px" />
+              <img alt="pic" src={password_formatcorrect} height="50px" />
             </span>
           </OverlayTrigger>
         ),
         passwordFormatMatched: false,
       });
       // this.state.passwordPatternMsg = (
-      //   <img src={password_formatcorrect} height="50px" />
+      //   <img alt="pic" src={password_formatcorrect} height="50px" />
       // );
     } else {
       console.log(value);
@@ -248,43 +249,44 @@ export default class AddUser extends Component {
             }
           >
             <span className="d-inline-block">
-              <img src={password_formatwrong} height="50px" />{" "}
+              <img alt="pic" src={password_formatwrong} height="50px" />{" "}
             </span>
           </OverlayTrigger>
         ),
         passwordFormatMatched: true,
       });
     }
-    this.state.passwordStrength.now = 0;
+
+    passwordStrength.now = 0;
     if (value.match("")) {
-      this.state.passwordStrength.variant = "danger";
-      this.state.passwordStrength.now = 0;
+      passwordStrength.variant = "danger";
+      passwordStrength.now = 0;
     }
     if (value.match("^(?=.*[a-z])")) {
-      this.state.passwordStrength.variant = "danger";
-      this.state.passwordStrength.now = this.state.passwordStrength.now + 10;
+      passwordStrength.variant = "danger";
+      passwordStrength.now = passwordStrength.now + 10;
     }
     if (value.match("^(?=.*[A-Z])")) {
-      this.state.passwordStrength.variant = "primary";
-      this.state.passwordStrength.now = this.state.passwordStrength.now + 10;
+      passwordStrength.variant = "primary";
+      passwordStrength.now = passwordStrength.now + 10;
     }
     if (value.match("^(?=.*[0-9])")) {
-      this.state.passwordStrength.variant = "info";
-      this.state.passwordStrength.now = this.state.passwordStrength.now + 10;
+      passwordStrength.variant = "info";
+      passwordStrength.now = passwordStrength.now + 10;
     }
     if (value.match("^(?=.*[!@#$%^&*])")) {
-      this.state.passwordStrength.variant = "warning";
-      this.state.passwordStrength.now = this.state.passwordStrength.now + 20;
+      passwordStrength.variant = "warning";
+      passwordStrength.now = passwordStrength.now + 20;
     }
     if (value.match("^(?=.{5,})")) {
-      this.state.passwordStrength.variant = "secondary";
-      this.state.passwordStrength.now = this.state.passwordStrength.now + 30;
+      passwordStrength.variant = "secondary";
+      passwordStrength.now = passwordStrength.now + 30;
     }
     if (
       value.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})")
     ) {
-      this.state.passwordStrength.variant = "success";
-      this.state.passwordStrength.now = this.state.passwordStrength.now + 20;
+      passwordStrength.variant = "success";
+      passwordStrength.now = passwordStrength.now + 20;
     }
   };
 
@@ -359,6 +361,9 @@ export default class AddUser extends Component {
       // window.close(false);
     }, 5000);
   };
+  componentDidMount = () => {
+    console.log("loaded");
+  };
   render() {
     return (
       <Container className="logreg-forms App-header py-5">
@@ -378,7 +383,7 @@ export default class AddUser extends Component {
               <Nav.Link eventKey="2">Register</Nav.Link>
             </Nav.Item>
           </Nav>
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label column sm="2">
               First&nbsp;Name
             </Form.Label>
@@ -395,7 +400,7 @@ export default class AddUser extends Component {
               </InputGroup.Append>
             </InputGroup>
           </Form.Row>
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label column sm="2">
               Last&nbsp;Name
             </Form.Label>
@@ -412,7 +417,7 @@ export default class AddUser extends Component {
               </InputGroup.Append>
             </InputGroup>
           </Form.Row>
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label column sm="2">
               Email
             </Form.Label>
@@ -430,7 +435,7 @@ export default class AddUser extends Component {
               </InputGroup.Append>
             </InputGroup>
           </Form.Row>
-          <Form.Row as={Row} controlId="formBasicPassword">
+          <Form.Row as={Row} controlid="formBasicPassword">
             <Form.Label column sm="2">
               Password
             </Form.Label>
@@ -452,8 +457,8 @@ export default class AddUser extends Component {
           {/* <Form.Row> */}
           <ProgressBar
             striped
-            variant={this.state.passwordStrength.variant}
-            now={this.state.passwordStrength.now}
+            variant={passwordStrength.variant}
+            now={passwordStrength.now}
           />
           {/* </Form.Row> */}
           <OverlayTrigger
@@ -507,7 +512,7 @@ export default class AddUser extends Component {
                 block
               >
                 <img
-                  alt=""
+                  alt="pic"
                   src={g}
                   width="20"
                   height="20"

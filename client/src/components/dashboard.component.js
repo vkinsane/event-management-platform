@@ -86,7 +86,9 @@ export default class DashBoard extends Component {
               attendance += 1;
             }
           }
+          return 0;
         });
+        return 0;
       });
       axios
         .post(`http://localhost:${port}/attendance/attend/${id}`, {
@@ -102,6 +104,7 @@ export default class DashBoard extends Component {
           this.setState({ message: "Error", alertType: "danger" });
         });
       setTimeout(this.setState({ message: "", alertType: "" }), 3000);
+      return 0;
     });
   };
 
@@ -179,8 +182,8 @@ export default class DashBoard extends Component {
                       <Button
                         onClick={(e) => {
                           this.setState({
-                            eQuery: document.getElementById("event-input")
-                              .value,
+                            eQuery:
+                              document.getElementById("event-input").value,
                             dQuery: document.getElementById("day-input").value,
                           });
                         }}

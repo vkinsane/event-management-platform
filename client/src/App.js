@@ -23,8 +23,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Dropdown,
   DropdownButton,
-  Button,
-  Badge,
   Col,
   Form,
   Nav,
@@ -46,7 +44,7 @@ import Login from "./components/loginpage.component";
 import Activation from "./components/activation.component";
 import GoogleActivation from "./components/googleActivation.component";
 import jwt_decode from "jwt-decode";
-import axios from "axios";
+// import axios from "axios";
 // Main Driver App
 export default function App() {
   // decoding name from local storage auth-token

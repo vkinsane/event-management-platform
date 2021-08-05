@@ -14,7 +14,7 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-
+var slots = {};
 export default class AddEvent extends Component {
   state = {
     dayCount: 0,
@@ -23,7 +23,7 @@ export default class AddEvent extends Component {
     venue: "",
     duration: "",
     dayslots: "",
-    slots: {},
+
     counter: 0,
     message: "",
     alertType: "",
@@ -31,7 +31,7 @@ export default class AddEvent extends Component {
 
   // Converting Slots into Object
   convertingSlots() {
-    const tempSlotObject = this.state.slots;
+    const tempSlotObject = slots;
     // const toSendObj = [];
     for (let a = 1; a <= Object.keys(tempSlotObject).length; a++) {
       const dayMaker = "Day" + a;
@@ -40,8 +40,9 @@ export default class AddEvent extends Component {
           `${slot} : ${tempSlotObject[dayMaker][slot]}`
         );
         delete tempSlotObject[dayMaker][slot];
+        return 0;
       });
-      this.state.slots = tempSlotObject;
+      this.setState({ slots: tempSlotObject });
       console.log(tempSlotObject);
     }
   }
@@ -49,8 +50,8 @@ export default class AddEvent extends Component {
   // Record the Changes in Each Slot
   handleChangeEachSlot = ({ target }) => {
     const { id, name, value } = target;
-    this.state.slots[id][name] = value;
-    console.log(this.state.slots);
+    slots[id][name] = value;
+    console.log(slots);
   };
 
   // Slot No. Setter
@@ -67,12 +68,12 @@ export default class AddEvent extends Component {
   // Slot Input Generator
   handleChangeEachDay = ({ target }) => {
     const { name, value } = target;
-    this.state.slots[name] = [];
+    slots[name] = [];
     for (let i = 1; i <= value; i++) {
       const slotMaker = "Slot" + i;
-      this.state.slots[name][slotMaker] = "";
+      slots[name][slotMaker] = "";
     }
-    console.log(this.state.slots);
+    console.log(slots);
     this.updateSlotInputBoxes();
   };
 
@@ -81,13 +82,13 @@ export default class AddEvent extends Component {
     const { name, value } = target;
 
     this.setState({ [name]: value });
-    this.state.slots = {};
+    slots = {};
 
     for (let i = 1; i <= value; i++) {
       const dayMaker = "Day" + i;
-      this.state.slots[dayMaker] = [];
+      slots[dayMaker] = [];
     }
-    console.log(this.state.slots);
+    console.log(slots);
   };
 
   // on Submission Add New Event
@@ -101,7 +102,7 @@ export default class AddEvent extends Component {
       date: this.state.date,
       venue: this.state.venue,
       duration: this.state.duration,
-      slots: this.state.slots,
+      slots: slots,
     };
 
     axios({
@@ -121,7 +122,9 @@ export default class AddEvent extends Component {
         this.setState({ message: "Couldn't add event", alertType: "danger" });
       });
   };
-
+  componentDidMount = () => {
+    console.log("Loaded");
+  };
   render() {
     return (
       <Container className="App-header py-5">
@@ -146,7 +149,7 @@ export default class AddEvent extends Component {
         </Row>
         <Form onSubmit={this.submit}>
           {/* EVENT NAME */}
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label column sm="2">
               Event Name
             </Form.Label>
@@ -162,7 +165,7 @@ export default class AddEvent extends Component {
           </Form.Row>
 
           {/* EVENT DATE */}
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label column sm="2">
               Event Date
             </Form.Label>
@@ -179,7 +182,7 @@ export default class AddEvent extends Component {
           </Form.Row>
 
           {/* VENUE */}
-          <Form.Row as={Row} controlId="formBasicText">
+          <Form.Row as={Row} controlid="formBasicText">
             <Form.Label column sm="2">
               Venue
             </Form.Label>
@@ -196,7 +199,7 @@ export default class AddEvent extends Component {
           </Form.Row>
 
           {/* DURATION */}
-          <Form.Row as={Row} controlId="formBasicTest">
+          <Form.Row as={Row} controlid="formBasicTest">
             <Form.Label column sm={2}>
               Duration
             </Form.Label>
@@ -216,11 +219,11 @@ export default class AddEvent extends Component {
           </Form.Row>
 
           {/* SLOTS */}
-          <Form.Row as={Row} controlId="formBasicTest">
+          <Form.Row as={Row} controlid="formBasicTest">
             <Form.Label column sm={2}>
               Slots:
             </Form.Label>
-            {Object.keys(this.state.slots).map((day) => {
+            {Object.keys(slots).map((day) => {
               return (
                 <Col as={Col} className="mb-4">
                   <Form.Label column sm={2}>
@@ -234,9 +237,9 @@ export default class AddEvent extends Component {
                     onChange={this.handleChangeEachDay}
                   />
 
-                  {Object.keys(this.state.slots[day]).map((slot) => {
+                  {Object.keys(slots[day]).map((slot) => {
                     return (
-                      <Form.Row as={Row} controlId="formBasicText">
+                      <Form.Row as={Row} controlid="formBasicText">
                         <Col as={Col}>
                           <Form.Label column sm={2}>
                             {slot}

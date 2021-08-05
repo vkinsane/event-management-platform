@@ -50,6 +50,7 @@ export default class ImportCsv extends Component {
       .map((eventx) =>
         Object.keys(eventx.slots).map((opt) => {
           slots[opt] = [];
+          return 0;
         })
       );
     this.setState({ slots: slots });
