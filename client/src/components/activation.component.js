@@ -16,7 +16,7 @@ export default class Activation extends Component {
       return this.rawUrl.slice(31, this.rawUrl.length);
     },
   };
-
+  // some mod for github push
   // on Submission Add New User
   submit = (event) => {
     event.preventDefault();
