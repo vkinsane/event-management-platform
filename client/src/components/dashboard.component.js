@@ -22,8 +22,8 @@ export default class DashBoard extends Component {
     persons: [],
     eventsd: [],
     personx: [],
-    eQuery: "MLFEST",
-    dQuery: "Day1",
+    eventsQuery: "MLFEST",
+    daysQuery: "Day1",
     url: "",
     message: "",
     alertType: "",
@@ -31,7 +31,7 @@ export default class DashBoard extends Component {
 
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
-    console.log(JSON.parse(localStorage.getItem("auth-token")));
+    // console.log(JSON.parse(localStorage.getItem("auth-token")));
     const attendance = axios.get(`http://localhost:5000/attendance/`);
     const eventsData = axios.get(`http://localhost:5000/event/`, {
       headers: JSON.parse(localStorage.getItem("auth-token")),
@@ -41,6 +41,7 @@ export default class DashBoard extends Component {
       .all([attendance, eventsData])
       .then(
         axios.spread((...responses) => {
+          // console.log(responses);
           const responseOne = responses[0];
           const responseTwo = responses[1];
           this.setState({
@@ -56,19 +57,25 @@ export default class DashBoard extends Component {
 
   // Fetch the attendees from the Table for the Event
   fetchAttendees(rows) {
-    return rows.filter((row) => row.event_name === this.state.eQuery);
+    return rows.filter((row) => row.event_name === this.state.eventsQuery);
   }
 
   // Fetch the event from the events
   fetchEvent(rows) {
-    return rows.filter((row) => row.ename.indexOf(this.state.eQuery) > -1);
+    return rows.filter((row) => row.ename.indexOf(this.state.eventsQuery) > -1);
   }
 
   // Fetch the slots from the events
   fetchSlots(rows) {
-    return rows[this.state.dQuery];
+    console.log(rows[this.state.daysQuery]);
+    return rows[this.state.daysQuery];
   }
-
+  handleEventInput(e) {
+    // console.log(e.target.value);
+    this.setState({
+      eventsQuery: e.target.value,
+    });
+  }
   // Mark Attedance accordingly
   submitAttendance = (e) => {
     this.setState({ message: "Processing", alertType: "warning" });
@@ -80,7 +87,7 @@ export default class DashBoard extends Component {
         this.fetchSlots(eventx["slots"]).map((slot) => {
           if (document.getElementById([person._id, slot]).checked) {
             if (!this.fetchSlots(person.slots).includes(slot)) {
-              slots[this.state.dQuery].push(slot);
+              slots[this.state.daysQuery].push(slot);
               attendance += 1;
             }
           }
@@ -94,11 +101,11 @@ export default class DashBoard extends Component {
           attendance: attendance,
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.setState({ message: "Attendance Marked", alertType: "success" });
         })
         .catch((error) => {
-          console.error(error);
+          // console.error(error);
           this.setState({ message: "Error", alertType: "danger" });
         });
       setTimeout(this.setState({ message: "", alertType: "" }), 3000);
@@ -139,14 +146,13 @@ export default class DashBoard extends Component {
                 <Col md="auto">
                   <InputGroup className="mb-3">
                     <Form.Control
-                      name="eQuery"
+                      name="eventsQuery"
                       id="event-input"
                       placeholder="Event Name"
                       as="select"
                       onChange={(e) => {
-                        this.setState({
-                          eQuery: document.getElementById("event-input").value,
-                        });
+                        // console.log(e.target.value);
+                        this.setState({ eventsQuery: e.target.value });
                       }}
                       custom
                     >
@@ -160,9 +166,15 @@ export default class DashBoard extends Component {
                       ))}
                     </Form.Control>
                     <Form.Control
-                      name="dQuery"
+                      name="daysQuery"
                       id="day-input"
                       as="select"
+                      onChange={(e) => {
+                        // console.log(e.target.value);
+                        this.setState({
+                          daysQuery: e.target.value,
+                        });
+                      }}
                       custom
                     >
                       <option value="#" disabled>
@@ -177,17 +189,18 @@ export default class DashBoard extends Component {
                       )}
                     </Form.Control>
                     <InputGroup.Append>
-                      <Button
+                      {/* <Button
                         onClick={(e) => {
                           this.setState({
-                            eQuery:
+                            eventsQuery:
                               document.getElementById("event-input").value,
-                            dQuery: document.getElementById("day-input").value,
+                            daysQuery:
+                              document.getElementById("day-input").value,
                           });
                         }}
                       >
                         Show Data
-                      </Button>
+                      </Button> */}
                     </InputGroup.Append>
                   </InputGroup>
                 </Col>

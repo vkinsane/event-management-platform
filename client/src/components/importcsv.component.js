@@ -6,18 +6,21 @@ import axios from "axios";
 import addStudent from "../assets/images/AddStudent.svg";
 
 // Importing the Components from react-bootstrap
-import { Container, Col, Form, Row, Alert } from "react-bootstrap";
+import { Container, Col, Form, Row, Alert, Button } from "react-bootstrap";
 
 export default class ImportCsv extends Component {
   state = {
     fname: "",
     email: "",
-    event_name: "MLFEST",
+    event_name: "",
     e_duration: "",
     slots: {},
     persons: [],
-    eventsd: [],
-    // parseSuccess: "",
+    eventsData: [],
+    message: "",
+    alertType: "",
+    csvParsedData: [],
+    showAlert: false,
   };
 
   // Fetch Data as Soon as Component Loads
@@ -26,16 +29,11 @@ export default class ImportCsv extends Component {
     axios
       .get(`http://localhost:5000/event/`)
       .then((res) => {
-        this.setState({ eventsd: res.data });
+        this.setState({ eventsData: res.data, event_name: res.data[0].ename });
       })
       .catch((errors) => {
         console.error(errors);
       });
-  }
-
-  //
-  updateArray(data) {
-    console.log(data);
   }
 
   // Set the Data in state variables
@@ -43,7 +41,7 @@ export default class ImportCsv extends Component {
     const { name, value } = target;
     this.setState({ [name]: value });
     const slots = {};
-    this.state.eventsd
+    this.state.eventsData
       .filter((row) => row.ename === value)
       .map((eventx) =>
         Object.keys(eventx.slots).map((opt) => {
@@ -55,59 +53,77 @@ export default class ImportCsv extends Component {
   };
 
   // Update the Data in Database
-  handleChange = ({ target }) => {
-    const tempFile = target.files[0];
-    var x = this.state.event_name;
-    var slots = this.state.slots;
-    this.setState({ message: "Processing", alertType: "warning" });
-
-    Papa.parse(tempFile, {
-      header: true,
-      dynamicTyping: true,
-      complete: function (fetchedData) {
-        console.log(fetchedData.data);
-        // const event_name = this.state.event_name;
-        fetchedData.data.map((student) => {
-          student.event_name = x;
-          student.slots = slots;
-          console.log(x);
-          axios
-            .post(`http://localhost:5000/attendance/register`, {
-              fname: student.fname,
-              email: student.email,
-              event_name: student.event_name,
-              contact: student.contact,
-              e_duration: student.e_duration,
-              slots: student.slots,
-            })
-            .then(() => {
-              console.log("Data has been sent to the server");
-              alert("Data has been sent to the server");
-              //   localStorage.setItem("parseSuccess", true);
-            })
-            .catch((error) => {
-              console.log(error);
-              alert("There was some error" + error);
-              //   localStorage.setItem("parseSuccess", false);
-            });
-          return 0;
+  handleChange = async ({ target }) => {
+    // const csvFile = target.files[0];
+    Papa.parsePromise = function (file) {
+      return new Promise(function (complete, error) {
+        Papa.parse(file, {
+          header: true,
+          dynamicTyping: true,
+          complete,
         });
-      },
+      });
+    };
+    var getData = await Papa.parsePromise(target.files[0]).then(function (
+      results
+    ) {
+      return results.data;
+    });
+    this.setState({
+      csvParsedData: getData,
     });
 
-    // console.log("gone thru");
+    // this.submitData(this.state.csvParsedData);
   };
-  //   check = () => {
-  //     // this.state.parseSuccess = localStorage.getItem("parseSuccess");
-  //     // console.log(this.state.parseSuccess);
-  //     this.state.parseSuccess = localStorage.getItem("parseSuccess");
-  //     this.componentDidMount();
-  //   };
+
+  submitData = (e) => {
+    e.preventDefault();
+
+    var parsedData = this.state.csvParsedData;
+    var ev_name = this.state.event_name;
+    var slots = this.state.slots;
+    console.log(parsedData);
+    if (parsedData.length == 0) {
+      this.setState({ message: "Error Occured", alertType: "danger" });
+    }
+    parsedData.map((student) => {
+      if (student.fname != null) {
+        student.event_name = ev_name;
+        student.slots = slots;
+        axios
+          .post(`http://localhost:5000/attendance/register`, {
+            fname: student.fname,
+            email: student.email,
+            event_name: student.event_name,
+            contact: student.contact,
+            e_duration: student.e_duration,
+            slots: student.slots,
+          })
+          .then(() => {
+            console.log("Data has been sent to the server");
+            this.setState({
+              message: "Candidates added for " + this.state.event_name,
+              alertType: "success",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            this.setState({ message: "Error Occured", alertType: "danger" });
+          });
+      } else {
+        this.setState({ message: "Error Occured", alertType: "danger" });
+      }
+    });
+
+    this.setState({
+      showAlert: true,
+    });
+  };
   render() {
     return (
       <Container className="App-header py-5">
-        {this.state.parseSuccess && (
-          <Alert variant="success">Data has been sent to server</Alert>
+        {this.state.showAlert && (
+          <Alert variant={this.state.alertType}>{this.state.message}</Alert>
         )}
         <h1>Choose event name from the Dropdown</h1>
         <Form.Control
@@ -121,7 +137,7 @@ export default class ImportCsv extends Component {
           <option value="#" disabled>
             --Select--
           </option>
-          {this.state.eventsd.map((opt) => (
+          {this.state.eventsData.map((opt) => (
             <option key={opt._id} value={opt.ename}>
               {opt.ename}
             </option>
@@ -143,8 +159,11 @@ export default class ImportCsv extends Component {
         </Row>
         <Form onChange={this.handleChange}>
           <input id="fileItem" type="file" />
+
+          <Button variant="primary" type="submit" onClick={this.submitData}>
+            Submit
+          </Button>
         </Form>
-        {/* <button onClick={this.check}>Check</button> */}
       </Container>
     );
   }
