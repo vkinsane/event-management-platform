@@ -27,7 +27,7 @@ export default class ImportCsv extends Component {
   componentDidMount() {
     // localStorage.removeItem("parseSuccess");
     axios
-      .get(`http://localhost:5000/event/`)
+      .get(`https://backend-api-emp.herokuapp.com/event/`)
       .then((res) => {
         this.setState({ eventsData: res.data, event_name: res.data[0].ename });
       })
@@ -91,7 +91,7 @@ export default class ImportCsv extends Component {
         student.event_name = ev_name;
         student.slots = slots;
         axios
-          .post(`http://localhost:5000/attendance/register`, {
+          .post(`https://backend-api-emp.herokuapp.com/attendance/register`, {
             fname: student.fname,
             email: student.email,
             event_name: student.event_name,

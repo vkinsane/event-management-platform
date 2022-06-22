@@ -32,10 +32,15 @@ export default class DashBoard extends Component {
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
     // console.log(JSON.parse(localStorage.getItem("auth-token")));
-    const attendance = axios.get(`http://localhost:5000/attendance/`);
-    const eventsData = axios.get(`http://localhost:5000/event/`, {
-      headers: JSON.parse(localStorage.getItem("auth-token")),
-    });
+    const attendance = axios.get(
+      `https://backend-api-emp.herokuapp.com/attendance/`
+    );
+    const eventsData = axios.get(
+      `https://backend-api-emp.herokuapp.com/event/`,
+      {
+        headers: JSON.parse(localStorage.getItem("auth-token")),
+      }
+    );
 
     axios
       .all([attendance, eventsData])
@@ -96,7 +101,7 @@ export default class DashBoard extends Component {
         return 0;
       });
       axios
-        .post(`http://localhost:5000/attendance/attend/${id}`, {
+        .post(`https://backend-api-emp.herokuapp.com/attendance/attend/${id}`, {
           slots: slots,
           attendance: attendance,
         })

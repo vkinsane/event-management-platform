@@ -28,7 +28,9 @@ export default class AddStudent extends Component {
 
   // Fetch Data as soon as Component Loads
   componentDidMount() {
-    const eventsData = axios.get(`http://localhost:5000/event/`);
+    const eventsData = axios.get(
+      `https://backend-api-emp.herokuapp.com/event/`
+    );
 
     axios
       .all([eventsData])
@@ -83,7 +85,7 @@ export default class AddStudent extends Component {
     this.setState({ message: "Processing", alertType: "warning" });
 
     axios({
-      url: "http://localhost:5000/attendance/register",
+      url: "https://backend-api-emp.herokuapp.com/attendance/register",
       method: "POST",
       data: payLoad,
     })

@@ -298,7 +298,7 @@ export default class AddUser extends Component {
       password: this.state.password,
     };
     axios({
-      url: "http://localhost:5000/users/register",
+      url: "https://backend-api-emp.herokuapp.com/users/register",
       method: "POST",
       data: payLoad,
     })
@@ -326,7 +326,7 @@ export default class AddUser extends Component {
     };
     console.log(response);
     axios({
-      url: "http://localhost:5000/users/google/register",
+      url: "https://backend-api-emp.herokuapp.com/users/google/register",
       method: "POST",
       data: payLoad,
     })

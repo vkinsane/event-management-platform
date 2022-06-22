@@ -17,7 +17,7 @@ export default class EventData extends Component {
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
     axios
-      .get(`http://localhost:5000/attendance/`)
+      .get(`https://backend-api-emp.herokuapp.com/attendance/`)
       .then((res) => {
         this.setState({ attendees: res.data });
       })

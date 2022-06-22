@@ -23,7 +23,7 @@ export default class Activation extends Component {
     localStorage.setItem("auth-token", this.state.onlyTok());
 
     axios({
-      url: `http://localhost:5000/users/activate/${this.state.onlyTok()}`,
+      url: `https://backend-api-emp.herokuapp.com/users/activate/${this.state.onlyTok()}`,
       method: "POST",
     })
       .then(() => {
