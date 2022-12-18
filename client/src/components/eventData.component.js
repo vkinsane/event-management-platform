@@ -17,7 +17,7 @@ export default class EventData extends Component {
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
     axios
-      .get(`http://localhost:5000/attendance/`)
+      .get(`https://emp-backend.onrender.com/attendance/`)
       .then((res) => {
         this.setState({ attendees: res.data });
       })

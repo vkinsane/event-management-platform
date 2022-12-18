@@ -139,7 +139,7 @@ export default class Login extends Component {
       password: this.state.password,
     };
     axios({
-      url: `http://localhost:5000/users/login`,
+      url: `https://emp-backend.onrender.com/users/login`,
       method: "POST",
       data: payLoads,
     })
@@ -176,7 +176,7 @@ export default class Login extends Component {
     localStorage.setItem("userGoogleImgUrl", response.profileObj.imageUrl);
     // console.log(response.profileObj.email);
     axios({
-      url: `http://localhost:5000/users/google/login`,
+      url: `https://emp-backend.onrender.com/users/google/login`,
       method: "POST",
       data: payLoad,
     })

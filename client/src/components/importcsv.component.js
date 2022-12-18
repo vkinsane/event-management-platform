@@ -24,7 +24,7 @@ export default class ImportCsv extends Component {
   componentDidMount() {
     // localStorage.removeItem("parseSuccess");
     axios
-      .get(`http://localhost:5000/event/`)
+      .get(`https://emp-backend.onrender.com/event/`)
       .then((res) => {
         this.setState({ eventsd: res.data });
       })
@@ -72,7 +72,7 @@ export default class ImportCsv extends Component {
           student.slots = slots;
           console.log(x);
           axios
-            .post(`http://localhost:5000/attendance/register`, {
+            .post(`https://emp-backend.onrender.com/attendance/register`, {
               fname: student.fname,
               email: student.email,
               event_name: student.event_name,

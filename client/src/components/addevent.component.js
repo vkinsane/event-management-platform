@@ -106,7 +106,7 @@ export default class AddEvent extends Component {
     };
 
     axios({
-      url: "http://localhost:5000/event/add",
+      url: "https://emp-backend.onrender.com/event/add",
       method: "POST",
       data: payLoad,
     })

@@ -28,7 +28,7 @@ export default class AddStudent extends Component {
 
   // Fetch Data as soon as Component Loads
   componentDidMount() {
-    const eventsData = axios.get(`http://localhost:5000/event/`);
+    const eventsData = axios.get(`https://emp-backend.onrender.com/event/`);
 
     axios
       .all([eventsData])
@@ -83,7 +83,7 @@ export default class AddStudent extends Component {
     this.setState({ message: "Processing", alertType: "warning" });
 
     axios({
-      url: "http://localhost:5000/attendance/register",
+      url: "https://emp-backend.onrender.com/attendance/register",
       method: "POST",
       data: payLoad,
     })

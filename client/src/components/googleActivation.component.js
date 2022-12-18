@@ -22,7 +22,7 @@ export default class GoogleActivation extends Component {
     localStorage.setItem("auth-token", this.state.onlyTok());
 
     axios({
-      url: `http://localhost:5000/users/google/activate/${this.state.onlyTok()}`,
+      url: `https://emp-backend.onrender.com/users/google/activate/${this.state.onlyTok()}`,
       method: "POST",
     })
       .then(() => {
