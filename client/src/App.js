@@ -52,10 +52,9 @@ export default function App() {
   const userGoogleImgUrl = localStorage.getItem("userGoogleImgUrl");
   const nameDecoder = () => {
     if (localStorage.getItem("auth-token")) {
-      const tokenStr = localStorage.getItem("auth-token");
-      const splitTokenStr = tokenStr.split(",");
-      const targetToken = splitTokenStr[2].split('"');
-      const decoded = jwt_decode(targetToken[3]);
+      var token = JSON.parse(localStorage.getItem("auth-token"));
+      // console.log(token["auth-token"]);
+      const decoded = jwt_decode(token["auth-token"]);
       return decoded.fname;
     } else {
       return "";
