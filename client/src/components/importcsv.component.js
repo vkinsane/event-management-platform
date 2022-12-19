@@ -54,6 +54,8 @@ export default class ImportCsv extends Component {
           slots: eachEvent.slots,
           eventDuration: eachEvent.duration,
         });
+
+        return 0;
       });
     // console.log(this.state);
   };
