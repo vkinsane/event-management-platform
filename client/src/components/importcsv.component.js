@@ -4,105 +4,114 @@ import axios from "axios";
 
 // Importing Logos
 import addStudent from "../assets/images/AddStudent.svg";
-
+import csvFile from "../assets/files/sample_file.csv";
 // Importing the Components from react-bootstrap
 import { Container, Col, Form, Row, Alert } from "react-bootstrap";
 
 export default class ImportCsv extends Component {
-  state = {
-    fname: "",
-    email: "",
-    event_name: "MLFEST",
-    e_duration: "",
-    slots: {},
-    persons: [],
-    eventsd: [],
-    // parseSuccess: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      fname: "",
+      email: "",
+      eventsData: [],
+      eventName: "",
+      eventDuration: "",
+      slots: {},
+      fileUploaded: false,
+      fileData: [],
+    };
+  }
 
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
-    // localStorage.removeItem("parseSuccess");
     axios
       .get(`https://emp-backend.onrender.com/event/`)
       .then((res) => {
-        this.setState({ eventsd: res.data });
+        this.setState({
+          eventsData: res.data,
+          eventName: res.data[0].ename,
+          slots: res.data[0].slots,
+          eventDuration: res.data[0].duration,
+        });
+
+        console.log(this.state);
       })
       .catch((errors) => {
         console.error(errors);
       });
   }
 
-  //
-  updateArray(data) {
-    console.log(data);
-  }
-
   // Set the Data in state variables
   handleChangeEvent = ({ target }) => {
     const { name, value } = target;
     this.setState({ [name]: value });
-    const slots = {};
-    this.state.eventsd
+    this.state.eventsData
       .filter((row) => row.ename === value)
-      .map((eventx) =>
-        Object.keys(eventx.slots).map((opt) => {
-          slots[opt] = [];
-          return 0;
-        })
-      );
-    this.setState({ slots: slots });
+      .map((eachEvent) => {
+        this.setState({
+          eventName: eachEvent.ename,
+          slots: eachEvent.slots,
+          eventDuration: eachEvent.duration,
+        });
+      });
+    // console.log(this.state);
   };
 
   // Update the Data in Database
-  handleChange = ({ target }) => {
-    const tempFile = target.files[0];
-    var x = this.state.event_name;
-    var slots = this.state.slots;
-    this.setState({ message: "Processing", alertType: "warning" });
+  sendDataToServer = (e) => {
+    e.preventDefault();
+    var fetchedData = this.state.fileData;
+    console.log(fetchedData);
+    fetchedData.map((student) => {
+      console.log(student);
+      student.eventName = this.state.eventName;
+      student.slots = this.state.slots;
+      axios
+        .post(`https://emp-backend.onrender.com/attendance/register`, {
+          fname: student.fname,
+          email: student.email,
+          contact: student.contact,
+          event_name: student.eventName,
+          slots: student.slots,
+        })
+        .then(() => {
+          // console.log("Data has been sent to the server");
+          alert(
+            "Student " +
+              student.fname +
+              " registration done for event " +
+              student.eventName
+          );
+        })
+        .catch((error) => {
+          // console.log(error);
+          alert("There was some error" + error);
+        });
+      return 0;
+    });
+  };
 
-    Papa.parse(tempFile, {
+  handleChangeFile = ({ target }) => {
+    const file = target.files[0];
+    this.setState({ message: "Processing", alertType: "warning" });
+    const updateFileUploaded = (fetchedData) => {
+      fetchedData.pop(); //removing the last empty entry row
+      console.log("file received");
+      console.log(fetchedData);
+      this.setState({ fileData: fetchedData });
+      this.setState({ fileUploaded: true });
+    };
+
+    Papa.parse(file, {
       header: true,
       dynamicTyping: true,
       complete: function (fetchedData) {
-        console.log(fetchedData.data);
-        // const event_name = this.state.event_name;
-        fetchedData.data.map((student) => {
-          student.event_name = x;
-          student.slots = slots;
-          console.log(x);
-          axios
-            .post(`https://emp-backend.onrender.com/attendance/register`, {
-              fname: student.fname,
-              email: student.email,
-              event_name: student.event_name,
-              contact: student.contact,
-              e_duration: student.e_duration,
-              slots: student.slots,
-            })
-            .then(() => {
-              console.log("Data has been sent to the server");
-              alert("Data has been sent to the server");
-              //   localStorage.setItem("parseSuccess", true);
-            })
-            .catch((error) => {
-              console.log(error);
-              alert("There was some error" + error);
-              //   localStorage.setItem("parseSuccess", false);
-            });
-          return 0;
-        });
+        updateFileUploaded(fetchedData.data);
       },
     });
-
-    // console.log("gone thru");
   };
-  //   check = () => {
-  //     // this.state.parseSuccess = localStorage.getItem("parseSuccess");
-  //     // console.log(this.state.parseSuccess);
-  //     this.state.parseSuccess = localStorage.getItem("parseSuccess");
-  //     this.componentDidMount();
-  //   };
+
   render() {
     return (
       <Container className="App-header py-5">
@@ -111,7 +120,7 @@ export default class ImportCsv extends Component {
         )}
         <h1>Choose event name from the Dropdown</h1>
         <Form.Control
-          name="event_name"
+          name="eventName"
           id="event-input"
           placeholder="Event Name"
           as="select"
@@ -121,7 +130,7 @@ export default class ImportCsv extends Component {
           <option value="#" disabled>
             --Select--
           </option>
-          {this.state.eventsd.map((opt) => (
+          {this.state.eventsData.map((opt) => (
             <option key={opt._id} value={opt.ename}>
               {opt.ename}
             </option>
@@ -141,10 +150,18 @@ export default class ImportCsv extends Component {
             <h1 className={this.props.mode}>Add Students for Event</h1>
           </Col>
         </Row>
-        <Form onChange={this.handleChange}>
-          <input id="fileItem" type="file" />
+        <Form onChange={this.handleChangeFile}>
+          <input id="fileItem" type="file" accept=".csv" />{" "}
+          <a href={csvFile} download>
+            Download Sample CSV File
+          </a>{" "}
+          {this.state.fileUploaded && (
+            <button onClick={this.sendDataToServer.bind(this)}>Submit</button>
+          )}
+          {/* <button onClick={this.increaseCount.bind(this)}>
+            count {this.state.count}
+          </button> */}
         </Form>
-        {/* <button onClick={this.check}>Check</button> */}
       </Container>
     );
   }

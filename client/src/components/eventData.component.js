@@ -28,6 +28,7 @@ export default class EventData extends Component {
 
   // Fetch attendees according to Search Query
   fetchSearchResults(rows) {
+    console.log(this.state.attendees);
     return rows
       .filter((row) => row.fname.toLowerCase().indexOf(this.state.nQuery) > -1)
       .filter(
