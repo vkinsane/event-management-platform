@@ -20,18 +20,16 @@ import {
 export default class DashBoard extends Component {
   state = {
     persons: [],
-    eventsd: [],
-    personx: [],
-    eQuery: "MLFEST",
-    dQuery: "Day1",
-    url: "",
+    eventsData: [],
+    eventQuery: "MLFEST",
+    dayQuery: "Day1",
     message: "",
     alertType: "",
   };
 
   // Fetch Data as Soon as Component Loads
   componentDidMount() {
-    console.log(JSON.parse(localStorage.getItem("auth-token")));
+    // console.log(JSON.parse(localStorage.getItem("auth-token")));
     const attendance = axios.get(
       `https://emp-backend.onrender.com/attendance/`
     );
@@ -47,7 +45,11 @@ export default class DashBoard extends Component {
           const responseTwo = responses[1];
           this.setState({
             persons: responseOne.data,
-            eventsd: responseTwo.data,
+            eventsData: responseTwo.data,
+          });
+
+          this.setState({
+            eventQuery: this.state.eventsData[0].ename,
           });
         })
       )
@@ -58,17 +60,17 @@ export default class DashBoard extends Component {
 
   // Fetch the attendees from the Table for the Event
   fetchAttendees(rows) {
-    return rows.filter((row) => row.event_name === this.state.eQuery);
+    return rows.filter((row) => row.event_name === this.state.eventQuery);
   }
 
   // Fetch the event from the events
   fetchEvent(rows) {
-    return rows.filter((row) => row.ename.indexOf(this.state.eQuery) > -1);
+    return rows.filter((row) => row.ename.indexOf(this.state.eventQuery) > -1);
   }
 
   // Fetch the slots from the events
   fetchSlots(rows) {
-    return rows[this.state.dQuery];
+    return rows[this.state.dayQuery];
   }
 
   // Mark Attedance accordingly
@@ -78,11 +80,11 @@ export default class DashBoard extends Component {
       var attendance = 0;
       const slots = person.slots;
       const id = person._id;
-      this.fetchEvent(this.state.eventsd).map((eventx) => {
+      this.fetchEvent(this.state.eventsData).map((eventx) => {
         this.fetchSlots(eventx["slots"]).map((slot) => {
           if (document.getElementById([person._id, slot]).checked) {
             if (!this.fetchSlots(person.slots).includes(slot)) {
-              slots[this.state.dQuery].push(slot);
+              slots[this.state.dayQuery].push(slot);
               attendance += 1;
             }
           }
@@ -141,13 +143,14 @@ export default class DashBoard extends Component {
                 <Col md="auto">
                   <InputGroup className="mb-3">
                     <Form.Control
-                      name="eQuery"
+                      name="eventQuery"
                       id="event-input"
                       placeholder="Event Name"
                       as="select"
                       onChange={(e) => {
                         this.setState({
-                          eQuery: document.getElementById("event-input").value,
+                          eventQuery:
+                            document.getElementById("event-input").value,
                         });
                       }}
                       custom
@@ -155,14 +158,14 @@ export default class DashBoard extends Component {
                       <option value="#" disabled>
                         --Select--
                       </option>
-                      {this.state.eventsd.map((opt) => (
+                      {this.state.eventsData.map((opt) => (
                         <option key={opt._id} value={opt.ename}>
                           {opt.ename}
                         </option>
                       ))}
                     </Form.Control>
                     <Form.Control
-                      name="dQuery"
+                      name="dayQuery"
                       id="day-input"
                       as="select"
                       custom
@@ -170,7 +173,7 @@ export default class DashBoard extends Component {
                       <option value="#" disabled>
                         --Select--
                       </option>
-                      {this.fetchEvent(this.state.eventsd).map((eventx) =>
+                      {this.fetchEvent(this.state.eventsData).map((eventx) =>
                         Object.keys(eventx.slots).map((opt) => (
                           <option key={opt} value={opt}>
                             {opt}
@@ -182,9 +185,10 @@ export default class DashBoard extends Component {
                       <Button
                         onClick={(e) => {
                           this.setState({
-                            eQuery:
+                            eventQuery:
                               document.getElementById("event-input").value,
-                            dQuery: document.getElementById("day-input").value,
+                            dayQuery:
+                              document.getElementById("day-input").value,
                           });
                         }}
                       >
@@ -204,7 +208,7 @@ export default class DashBoard extends Component {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Event</th>
-                  {this.fetchEvent(this.state.eventsd).map((day) =>
+                  {this.fetchEvent(this.state.eventsData).map((day) =>
                     this.fetchSlots(day.slots).map((slot) => (
                       <th key={slot}>{slot}</th>
                     ))
@@ -213,7 +217,7 @@ export default class DashBoard extends Component {
               </thead>
               <tbody>
                 {this.fetchAttendees(this.state.persons).map((person) =>
-                  this.fetchEvent(this.state.eventsd).map((eventx) => (
+                  this.fetchEvent(this.state.eventsData).map((eventx) => (
                     <tr key={person._id + eventx}>
                       <td key="1">{person.fname}</td>
                       <td key="2">{person.email}</td>
